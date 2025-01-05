@@ -32,7 +32,7 @@
                    displayName="Important Files"
                    projectFiles="true">
       <itemPath>Makefile</itemPath>
-      <itemPath>Fancy_I2C_Extender.mc3</itemPath>
+      <itemPath>FancyIOExpander.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
