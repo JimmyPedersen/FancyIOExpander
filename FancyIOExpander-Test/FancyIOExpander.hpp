@@ -6,6 +6,28 @@
 
 class FancyIOExp {
 public:
+    typedef enum
+    {
+        LAT,       // 0
+        PORT,      // 1
+        TRIS,      // 2
+        INLVL,     // 3
+        SLRCON,    // 4
+        ODCON,     // 5
+        WPU,       // 6
+        ANSEL,     // 7
+        IOCxF,     // 8
+        IOCxN,     // 9
+        IOCxP,     // 00
+        RegistersCNT       
+    }Registers;
+
+    typedef enum
+    {
+        Port0,        // 0
+        Port1,        // 1
+        ePortCNT       
+    }Ports;
 
     /**
      * Default constructor
@@ -100,6 +122,17 @@ public:
     }
 
     /**
+     * Write single byte in expansion board register
+     * @param register Register
+     * @param port Port
+     * @return Read register byte value
+     */
+    uint8_t writeRegister(Registers register, Ports port, uint8_t data)
+    {
+      return writeRegister(((uint16_t)port<<8) | (uint16_t)register, data); 
+    }
+
+    /**
      * Read data from expansion board memory
      * @param addr Memory address
      * @param length Number of bytes to read
@@ -188,6 +221,18 @@ public:
         lastReadOk_ =  (readMemory(regAddr | 0x8000, 1 , &tmp) == 1);
         return tmp;
     }
+
+    /**
+     * Read single byte from expansion board register
+     * @param register Register
+     * @param port Port     
+     * @return Read register byte value
+     */
+    uint8_t readRegister(Registers register, Ports port)
+    {
+      return readRegister(((uint16_t)port<<8) | (uint16_t)register); 
+    }
+
 
     /**
      * Read ADC value from expansion board

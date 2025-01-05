@@ -207,10 +207,12 @@ void loop()
 
 
         // PORT0 - Write TRIS
-        IOExp.writeRegister(2, 0); // 0 = All outputs
+//        IOExp.writeRegister(2, 0); // 0 = All outputs
+        IOExp.writeRegister(IOExp.TRIS, IOExp.PORT0, 0x80); // 0 = All outputs
 
         // PORT0 - Write LAT
-        IOExp.writeRegister(0, Toggle);  // Set all outputs
+//        IOExp.writeRegister(0, Toggle);  // Set all outputs
+        IOExp.writeRegister(IOExp.LAT, IOExp.PORT0, Toggle); // Set all outputs
 
         // Toggle data outputed     
         Toggle = ~Toggle; 
@@ -218,16 +220,20 @@ void loop()
 
 
         // PORT1 - TRIS all input
-        IOExp.writeRegister(0x1002, 0xFF);// 0xFF = Set all as inputs
+//        IOExp.writeRegister(0x1002, 0xFF);// 0xFF = Set all as inputs
+        IOExp.writeRegister(IOExp.TRIS, IOExp.PORT1, 0xff);// 0xFF = Set all as inputs
 
         // PORT1 - WPU all input 
-        IOExp.writeRegister( 0x1006, 0x7F);// 0x7F = Activate all pullups but on the P1.7 pin
+//        IOExp.writeRegister( 0x1006, 0x7F);// 0x7F = Activate all pullups but on the P1.7 pin
+        IOExp.writeRegister(IOExp.WPU, IOExp.PORT1, 0x7f);// 0x7F = Activate all pullups but on the P1.7 pin
 
         // PORT1 - ANSEL P1.7
-        IOExp.writeRegister(0x1007, 0x80);// Set P1.7 pin as analog
+//        IOExp.writeRegister(0x1007, 0x80);// Set P1.7 pin as analog
+        IOExp.writeRegister(IOExp.ANSEL, IOExp.PORT1, 0x80);// Set P1.7 pin as analog
 
         // PORT1 - read input
-        read = IOExp.readRegister(0x1001);
+//        read = IOExp.readRegister(0x1001);
+        read = IOExp.readRegister(IOExp.PORT, IOExp.PORT1);
         xprintf("Read Port 1: %u  (Inv:%u) Read OK:%u\n", read, 255-read, IOExp.isLastReadSuccessful());
 
 
