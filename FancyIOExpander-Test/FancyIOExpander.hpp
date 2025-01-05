@@ -151,7 +151,7 @@ public:
      * @return Read byte value
      */
     uint8_t readEEPROM(uint16_t EEAddr) {
-        uint8_t tmp;
+        static uint8_t tmp;
         lastReadOk_ = (readMemory(EEAddr, 1, &tmp) == 1);
         return tmp;
     }
@@ -184,8 +184,8 @@ public:
      * @return Read register byte value
      */
     uint8_t readRegister(uint16_t regAddr) {
-        uint8_t tmp;
-        readMemory(regAddr | 0x8000, 1 , &tmp);
+        static uint8_t tmp;
+        lastReadOk_ =  (readMemory(regAddr | 0x8000, 1 , &tmp) == 1);
         return tmp;
     }
 
@@ -195,7 +195,7 @@ public:
      * @return 16-bit ADC value
      */
     uint16_t readADC(uint8_t adcAddr) {
-        uint8_t adc_tmp[2] = {0, 0};
+        static uint8_t adc_tmp[2] = {0, 0};
         readMemory(0x8020 | ((uint16_t)adcAddr<<8), 2, adc_tmp);
         xprintf("LB:0x%02X\n", adc_tmp[0]);
         xprintf("HB:0x%02X\n", adc_tmp[1]);
