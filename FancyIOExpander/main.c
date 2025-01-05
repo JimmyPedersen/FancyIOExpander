@@ -17,8 +17,8 @@ typedef union
     struct 
     {
         unsigned int cmd : 8;
-        unsigned int portNo : 3;
         unsigned int extra : 4; // Also used for selecting specific pin
+        unsigned int portNo : 3;
         unsigned int isCMD : 1;    
     };
     struct
@@ -41,10 +41,11 @@ bool handle_write_cmd(address_t c, uint8_t rb)
         // Handle other commands
         switch(c.cmd)
         {
-            case 33:
+            case REGISTERS_MAX_COUNT+0: // 32
+                // Write to DACs
                 break;
                 
-            case 34:
+            case REGISTERS_MAX_COUNT+1: // 33
                 break;
             
             default:
@@ -68,8 +69,8 @@ bool handle_read_cmd(address_t c, uint8_t *wb)
         // Handle other commands
         switch(c.cmd)
         {
-            // Read ADC value
-            case 33:
+             // Read ADC value
+            case REGISTERS_MAX_COUNT + 0:   // 32
                 if(!i2c_slave_get_byte_no())
                     a.raw = c.raw;
                 
@@ -90,7 +91,7 @@ bool handle_read_cmd(address_t c, uint8_t *wb)
                 }
                 break;
                 
-            case 34:
+            case REGISTERS_MAX_COUNT + 1:  // 33
 
                 break;
             

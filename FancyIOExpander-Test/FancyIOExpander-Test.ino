@@ -232,12 +232,12 @@ void loop()
 
 
         // PORT1 - read adc P1.7
-        uint16_t adc_val = IOExp.readADC(0xB921);
+        uint16_t adc_val = IOExp.readADC(0x17);
         xprintf("P1.7 ADC value:%u\n", adc_val);
 
         #define NO_OF_ADCS_TO_READ  16
         uint16_t adc_tmp[NO_OF_ADCS_TO_READ] = {0};
-        bool read_res = IOExp.readADCs(NO_OF_ADCS_TO_READ, adc_tmp);
+        bool read_res = IOExp.readADCs(0, NO_OF_ADCS_TO_READ, adc_tmp);
         xprintf("Read %u ADCs(Res:%u): ", NO_OF_ADCS_TO_READ, read_res);
         for(uint8_t i = 0; i < NO_OF_ADCS_TO_READ; i++)
            xprintf("#%u:%u ", i, adc_tmp[i]);

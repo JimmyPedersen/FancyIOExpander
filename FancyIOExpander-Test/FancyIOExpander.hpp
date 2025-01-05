@@ -194,9 +194,9 @@ public:
      * @param adcAddr ADC address
      * @return 16-bit ADC value
      */
-    uint16_t readADC(uint16_t adcAddr) {
+    uint16_t readADC(uint8_t adcAddr) {
         uint8_t adc_tmp[2] = {0, 0};
-        readMemory(adcAddr, 2, adc_tmp);
+        readMemory(0x8020 | ((uint16_t)adcAddr<<8), 2, adc_tmp);
         xprintf("LB:0x%02X\n", adc_tmp[0]);
         xprintf("HB:0x%02X\n", adc_tmp[1]);
         return static_cast<uint16_t>(adc_tmp[1]) << 8 | adc_tmp[0];
@@ -204,12 +204,13 @@ public:
 
     /**
      * Read multiple ADC values from expansion board
+     * @param start First ADC to read
      * @param adcs Number of ADCs to read
      * @param dest Pointer to destination buffer for ADC values
      * @return True if all ADCs were read successfully
      */
-    bool readADCs(uint8_t adcs, uint16_t *dest) {
-        return readMemory(0x8021, adcs * 2, reinterpret_cast<uint8_t*>(dest)) == 1;
+    bool readADCs(uint8_t start, uint8_t adcs, uint16_t *dest) {
+        return readMemory(0x8020 | ((uint16_t)start<<8) , adcs * 2, reinterpret_cast<uint8_t*>(dest)) == 1;
     }
 
     /**
