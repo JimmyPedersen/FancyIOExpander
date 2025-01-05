@@ -1,0 +1,9 @@
+
+18F24Q10 Memory Summary:
+    Program space        used  1C96h (  7318) of  4000h bytes   ( 44.7%)
+    Data space           used   2D2h (   722) of   400h bytes   ( 70.5%)
+    Configuration bits   used     6h (     6) of     6h words   (100.0%)
+    EEPROM space         used     0h (     0) of   100h bytes   (  0.0%)
+    ID Location space    used     0h (     0) of   100h bytes   (  0.0%)
+    Data stack space     used   100h (   256) of   100h bytes   (100.0%)
+

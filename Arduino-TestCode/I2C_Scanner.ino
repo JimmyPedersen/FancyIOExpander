@@ -1,0 +1,298 @@
+// --------------------------------------
+// i2c_scanner
+//
+// Version 1
+//    This program (or code that looks like it)
+//    can be found in many places.
+//    For example on the Arduino.cc forum.
+//    The original author is not know.
+// Version 2, Juni 2012, Using Arduino 1.0.1
+//     Adapted to be as simple as possible by Arduino.cc user Krodal
+// Version 3, Feb 26  2013
+//    V3 by louarnold
+// Version 4, March 3, 2013, Using Arduino 1.0.3
+//    by Arduino.cc user Krodal.
+//    Changes by louarnold removed.
+//    Scanning addresses changed from 0...127 to 1...119,
+//    according to the i2c scanner by Nick Gammon
+//    https://www.gammon.com.au/forum/?id=10896
+// Version 5, March 28, 2013
+//    As version 4, but address scans now to 127.
+//    A sensor seems to use address 120.
+// Version 6, November 27, 2015.
+//    Added waiting for the Leonardo serial communication.
+//
+//
+// This sketch tests the standard 7-bit addresses
+// Devices with higher bit address might not be seen properly.
+//
+ 
+#include <Wire.h>
+#include "FancyIOExpander.hpp"
+
+FancyI2CExp i2cExp;
+
+//bool exp_read_ok = true;
+ 
+/**
+  * Printf function
+  * @param format printf format
+  */
+void xprintf(const char *format, ...)
+{
+  char buffer[256];  // or smaller or static &c.
+  va_list args;
+  va_start(args, format);
+  vsprintf(buffer, format, args);
+  va_end(args);
+  Serial.print(buffer);
+}
+
+void setup()
+{
+  Wire.begin();
+ 
+  Serial.begin(9600);
+  while (!Serial);             // Leonardo: wait for serial monitor
+  Serial.println("\nI2C Scanner");
+}
+
+/*
+void exp_write(uint8_t chipAddr, uint16_t EEAddr, uint8_t length, uint8_t *data) 
+{
+
+  xprintf("WR: C:%u, Addr:0x%04X Len:%u Data: ", chipAddr, EEAddr, length);
+  for(int i = 0; i < length; i++)
+    xprintf("%s0x%02X%s", (i == 0 ? "":", "), data[i], ((i+1) == length ? "\r\n":""));
+
+  Wire.beginTransmission (chipAddr);
+  Wire.write ((uint8_t)(EEAddr >> 8));
+  Wire.write ((uint8_t)(EEAddr & 255));
+  
+  while(length--)
+    Wire.write (*data++);
+
+  Wire.endTransmission ();
+  delay (1);
+}
+
+void exp_write(uint8_t chipAddr, uint16_t EEAddr, uint8_t data) 
+{
+//  static uint8_t tmp = data;
+  exp_write(chipAddr, EEAddr, 1, &data); 
+}
+
+
+void exp_cmd_write(uint8_t chipAddr, uint16_t EEAddr, uint8_t length, uint8_t *data) 
+{
+  exp_write(chipAddr, EEAddr | 0x8000, length, data); 
+}
+
+void exp_cmd_write(uint8_t chipAddr, uint16_t EEAddr, uint8_t data) 
+{
+//  static uint8_t tmp = data;
+  exp_write(chipAddr, EEAddr | 0x8000, 1, &data); 
+}
+
+uint8_t exp_read(uint8_t chipAddr, uint16_t EEAddr, uint8_t length, uint8_t *data) 
+{
+  if(!length)
+    return 0;
+
+  xprintf("RD: C:%u, Addr:0x%04X Len:%u Data: ", chipAddr, EEAddr, length);
+
+  Wire.beginTransmission (chipAddr);
+  Wire.write ((uint8_t)(EEAddr >> 8));
+  Wire.write ((uint8_t)(EEAddr & 255));
+  Wire.endTransmission ();
+  delay (1);
+
+  Wire.requestFrom (chipAddr, length);
+  delay (1);
+
+  uint8_t read = 0;
+  uint8_t *pDest = data;
+  uint8_t left = length;
+  while(left--)
+  {
+      if (!Wire.available())
+        break;
+      else
+        *pDest++ = Wire.read ();
+      read++;
+  }
+
+  for(int i = 0; i < read; i++)
+    xprintf("%s0x%02X%s", (i == 0 ? "":", "), data[i], ((i+1) == length ? "\n":""));
+
+  if(read<length)
+    xprintf("Failed to read all! (%u/%u)\n", read, length);
+
+  return read;
+}
+
+uint8_t exp_read(uint8_t chipAddr, uint16_t EEAddr) 
+{
+    static uint8_t tmp;
+    exp_read_ok =  (exp_read(chipAddr, EEAddr, 1, &tmp) == 1);
+    return tmp;
+}
+
+
+uint8_t exp_cmd_read(uint8_t chipAddr, uint16_t EEAddr, uint8_t length, uint8_t *data)
+{
+  return exp_read(chipAddr, EEAddr | 0x8000, length, data);
+}
+
+
+uint8_t exp_cmd_read(uint8_t chipAddr, uint16_t EEAddr) 
+{
+    return exp_read(chipAddr, EEAddr | 0x8000);
+}
+
+
+uint16_t exp_read_adc(uint8_t chipAddr, uint16_t EEAddr) 
+{
+    uint8_t adc_tmp[2] = {0, 0};
+
+    //adc_tmp[0] = 
+    exp_read(chipAddr, EEAddr, 2, adc_tmp);
+    xprintf("LB:0x%02X\n", adc_tmp[0]);
+
+//    adc_tmp[1] = exp_read(chipAddr, EEAddr + 1);
+    xprintf("HB:0x%02X\n", adc_tmp[1]);
+
+    return (uint16_t)adc_tmp[1] << 8 | adc_tmp[0];
+}
+
+bool exp_read_all_adcs(uint8_t chipAddr, uint8_t adcs, uint16_t *dest) 
+{
+    return exp_read(chipAddr, 0x8021, adcs * 2, (uint8_t *)dest) == 1;
+}
+*/
+
+
+void loop()
+{
+  byte error, chipAddr;
+  static byte val = 0;
+  int nDevices;
+ 
+//  Serial.println("Scanning...");
+ 
+  nDevices = 0;
+  //for(chipAddr = 1; chipAddr < 127; chipAddr++ )
+  chipAddr=0x2A;
+  {
+    // The i2c_scanner uses the return value of
+    // the Write.endTransmisstion to see if
+    // a device did acknowledge to the address.
+    Wire.beginTransmission(chipAddr);
+    error = Wire.endTransmission();
+ 
+    if (error == 0)
+    {
+      Serial.println("");
+      Serial.print("I2C device found at address 0x");
+      if (chipAddr<16)
+        Serial.print("0");
+      Serial.print(chipAddr, HEX);
+      Serial.println("  !");
+ 
+      i2cExp.setChipAddress(chipAddr);
+
+      if(chipAddr==0x2A)
+      {
+ //       delay(1000);
+
+        val += 1;
+
+        uint8_t rb[3] = {0,0,0};
+        uint8_t wb[3] = {val,val+1,val+2};
+
+        static unsigned char Toggle = 0x55;
+        uint16_t EEaddress = 0x0005;
+
+
+        // Read EEPROM contents
+        uint8_t read = i2cExp.readEEPROM(5, 3, rb);
+        xprintf("Read %u bytes!\n", read);
+
+        // Write EEPROM contents
+        i2cExp.writeEEPROM(5, 3, wb);
+
+        // Read EEPROM contents
+        read = i2cExp.readEEPROM(5, 3, rb);
+        xprintf("Read %u bytes!\n", read);
+
+        if(wb[0] == rb[0] && wb[1] == rb[1] && wb[2] == rb[2])
+          Serial.println("Read == Write");
+        else
+          Serial.println("Read != Write");  
+
+
+        // PORT0 - Write TRIS
+        i2cExp.writeRegister(2, 0); // 0 = All outputs
+
+        // PORT0 - Write LAT
+        i2cExp.writeRegister(0, Toggle);  // Set all outputs
+
+        // Toggle data outputed     
+        Toggle = ~Toggle; 
+
+
+
+        // PORT1 - TRIS all input
+        i2cExp.writeRegister(0x0102, 0xFF);// 0xFF = Set all as inputs
+
+        // PORT1 - WPU all input 
+        i2cExp.writeRegister( 0x0106, 0x7F);// 0x7F = Activate all pullups but on the P1.7 pin
+
+        // PORT1 - ANSEL P1.7
+        i2cExp.writeRegister(0x0107, 0x80);// Set P1.7 pin as analog
+
+        // PORT1 - read input
+        read = i2cExp.readRegister(0x0101);
+        xprintf("Read Port 1: %u  (Inv:%u) Read OK:%u\n", read, 255-read, i2cExp.isLastReadSuccessful());
+
+
+        // PORT1 - read adc P1.7
+        uint16_t adc_val = i2cExp.readADC(0xB921);
+        xprintf("P1.7 ADC value:%u\n", adc_val);
+
+        #define NO_OF_ADCS_TO_READ  16
+        uint16_t adc_tmp[NO_OF_ADCS_TO_READ] = {0};
+        bool read_res = i2cExp.readADCs(NO_OF_ADCS_TO_READ, adc_tmp);
+        xprintf("Read %u ADCs(Res:%u): ", NO_OF_ADCS_TO_READ, read_res);
+        for(uint8_t i = 0; i < NO_OF_ADCS_TO_READ; i++)
+           xprintf("#%u:%u ", i, adc_tmp[i]);
+        Serial.println("");
+      }
+      nDevices++;
+      Serial.println("");
+    }
+    else if (error==4)
+    {
+      Serial.print("Unknown error at address 0x");
+      if (chipAddr<16)
+        Serial.print("0");
+      Serial.println(chipAddr,HEX);
+      Serial.println("");
+    }    
+    
+  }
+  val++;
+  if (nDevices == 0)
+  {
+//    Serial.println("No I2C devices found");
+  }  
+  else
+  {
+    Serial.print("# of devices found:");
+    Serial.println(nDevices);
+    Serial.println("");
+  }
+  Serial.print(".");
+
+  delay(1000);           // wait a couple seconds for next scan
+}
