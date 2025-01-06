@@ -42,7 +42,7 @@ bool handle_write_cmd(address_t c, uint8_t rb)
         switch(c.cmd)
         {
             case REGISTERS_MAX_COUNT+0: // 32
-                // Write to DACs
+                DAC1_SetOutput(rb);
                 break;
                 
             case REGISTERS_MAX_COUNT+1: // 33

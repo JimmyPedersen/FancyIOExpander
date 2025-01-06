@@ -5,8 +5,8 @@
 #include "FancyIOExpander.hpp"
 
 FancyIOExp IOExp;
-using Regs = FancyIOExp::Registers;
-using Ports = FancyIOExp::Ports;
+//using Regs = FancyIOExp::Registers;
+//using Ports = FancyIOExp::Ports;
 
 //bool exp_read_ok = true;
  
@@ -36,7 +36,7 @@ void setup()
 
 void loop()
 {
-  byte error, chipAddr;
+  static byte error, chipAddr, dac_val = 0;
   static byte val = 0;
   int nDevices;
  
@@ -95,11 +95,13 @@ void loop()
 
         // PORT0 - Write TRIS
 //        IOExp.writeRegister(2, 0); // 0 = All outputs
-        IOExp.writeRegister(Regs::TRIS, Ports::Port0, 0x00); // 0 = All outputs
+//        IOExp.writeRegister(Regs::TRIS, Ports::Port0, 0x00); // 0 = All outputs
+        IOExp.writeRegister(IOExp.TRIS, IOExp.Port0, 0x00); // 0 = All outputs
 
         // PORT0 - Write LAT
 //        IOExp.writeRegister(0, Toggle);  // Set all outputs
-        IOExp.writeRegister(Regs::LAT, Ports::Port0, Toggle); // Set all outputs
+//        IOExp.writeRegister(Regs::LAT, Ports::Port0, Toggle); // Set all outputs
+        IOExp.writeRegister(IOExp.LAT, IOExp.Port0, Toggle); // Set all outputs
 
         // Toggle data outputed     
         Toggle = ~Toggle; 
@@ -120,8 +122,14 @@ void loop()
 
         // PORT1 - read input
 //        read = IOExp.readRegister(0x1001);
-        read = IOExp.readRegister(Regs::PORT, Ports::Port1);
+//        read = IOExp.readRegister(Regs::PORT, Ports::Port1);
+        read = IOExp.readRegister(IOExp.PORT, IOExp.Port1);
         xprintf("Read Port 1: %u  (Inv:%u) Read OK:%u\n", read, 255-read, IOExp.isLastReadSuccessful());
+
+        // DAC 
+        dac_val += 32;
+        xprintf("DAC: %u\n", dac_val);
+        IOExp.writeFunction(IOExp.wfDAC, 0, dac_val);
 
 
         // PORT1 - read adc P1.7

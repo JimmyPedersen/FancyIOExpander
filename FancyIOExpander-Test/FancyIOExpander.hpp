@@ -21,8 +21,7 @@ public:
         ANSEL,     // 7
         IOCxF,     // 8
         IOCxN,     // 9
-        IOCxP,     // 00
-//        RegistersCNT       
+        IOCxP,     // 10      
     };
 
 //    enum class Ports
@@ -31,9 +30,20 @@ public:
     enum Ports
     {
         Port0,        // 0
-        Port1,        // 1
-//        ePortCNT       
+        Port1,        // 1    
     };
+
+
+    enum ReadFunctions
+    {
+        rfADC,       // 0     
+    };
+
+    enum WriteFunctions
+    {
+        wfDAC,       // 0      
+    };
+
 
     /**
      * Default constructor
@@ -143,6 +153,21 @@ public:
     }
 
     /**
+     * Write single byte to expansion board function register
+     * @param function Write function
+     * @param extra extra value     
+     * @param data data
+     */
+    void writeFunction(WriteFunctions function, uint8_t extra, uint8_t data)
+    {
+      extra &= 0x0F;
+      uint16_t addr = (static_cast<uint16_t>(function) + 32) | 0x8000;
+      addr |= (uint16_t)extra<<8;
+      xprintf("Write-Function:%u, extra:%u, Addr:0x%04X\n", static_cast<uint16_t>(function), extra, addr);
+      writeRegister(addr, data); 
+    }
+
+    /**
      * Read data from expansion board memory
      * @param addr Memory address
      * @param length Number of bytes to read
@@ -248,6 +273,21 @@ public:
  //     return readRegister(((uint16_t)port<<8) | static_cast<uint16_t>(reg)); 
     }
 
+    /**
+     * Read single byte from expansion board register
+     * @param function Read function
+     * @param extra extra value     
+     * @return Read register byte value
+     */
+    uint8_t readFunction(ReadFunctions function, uint8_t extra)
+    {
+      extra &= 0x0F;
+      uint16_t addr = (static_cast<uint16_t>(function) + 32) | 0x8000;
+      addr |= (uint16_t)extra<<8;
+ //     xprintf("Read-Function:%u, extra:%u, Addr:0x%04X\n", static_cast<uint16_t>(function), extra, addr);
+      return readRegister(addr); 
+ //     return readRegister(((uint16_t)port<<8) | static_cast<uint16_t>(reg)); 
+    }
 
     /**
      * Read ADC value from expansion board
