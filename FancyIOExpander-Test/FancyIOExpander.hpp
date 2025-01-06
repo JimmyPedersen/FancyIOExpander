@@ -6,7 +6,10 @@
 
 class FancyIOExp {
 public:
-    typedef enum
+ //   enum class Registers
+//    enum class Registers: uint16_t
+//    enum Registers
+    enum Registers
     {
         LAT,       // 0
         PORT,      // 1
@@ -19,15 +22,18 @@ public:
         IOCxF,     // 8
         IOCxN,     // 9
         IOCxP,     // 00
-        RegistersCNT       
-    }Registers;
+//        RegistersCNT       
+    };
 
-    typedef enum
+//    enum class Ports
+//    enum class Ports: uint8_t
+//    enum Ports
+    enum Ports
     {
         Port0,        // 0
         Port1,        // 1
-        ePortCNT       
-    }Ports;
+//        ePortCNT       
+    };
 
     /**
      * Default constructor
@@ -123,13 +129,17 @@ public:
 
     /**
      * Write single byte in expansion board register
-     * @param register Register
+     * @param reg Register
      * @param port Port
      * @return Read register byte value
      */
-    uint8_t writeRegister(Registers register, Ports port, uint8_t data)
+    void writeRegister(Registers reg, Ports port, uint8_t data)
     {
-      return writeRegister(((uint16_t)port<<8) | (uint16_t)register, data); 
+      uint16_t addr = static_cast<uint16_t>(port);
+      addr <<= 12;
+      addr |= static_cast<uint16_t>(reg);
+ //     xprintf("Write-Reg:%u, Port:%u, Addr:0x%04X\n", static_cast<uint16_t>(reg), static_cast<uint16_t>(port), addr);
+      writeRegister(addr, data); 
     }
 
     /**
@@ -228,9 +238,14 @@ public:
      * @param port Port     
      * @return Read register byte value
      */
-    uint8_t readRegister(Registers register, Ports port)
+    uint8_t readRegister(Registers reg, Ports port)
     {
-      return readRegister(((uint16_t)port<<8) | (uint16_t)register); 
+      uint16_t addr = static_cast<uint16_t>(port);
+      addr <<= 12;
+      addr |= static_cast<uint16_t>(reg);
+ //     xprintf("Read-Reg:%u, Port:%u, Addr:0x%04X\n", static_cast<uint16_t>(reg), static_cast<uint16_t>(port), addr);
+      return readRegister(addr); 
+ //     return readRegister(((uint16_t)port<<8) | static_cast<uint16_t>(reg)); 
     }
 
 
