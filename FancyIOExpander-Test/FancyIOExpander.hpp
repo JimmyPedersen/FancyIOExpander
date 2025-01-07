@@ -11,17 +11,17 @@ public:
 //    enum Registers
     enum Registers
     {
-        LAT,       // 0
-        PORT,      // 1
-        TRIS,      // 2
-        INLVL,     // 3
-        SLRCON,    // 4
-        ODCON,     // 5
-        WPU,       // 6
-        ANSEL,     // 7
-        IOCxF,     // 8
-        IOCxN,     // 9
-        IOCxP,     // 10      
+        eLAT,       // 0
+        ePORT,      // 1
+        eTRIS,      // 2
+        eINLVL,     // 3
+        eSLRCON,    // 4
+        eODCON,     // 5
+        eWPU,       // 6
+        eANSEL,     // 7
+        eIOCxF,     // 8
+        eIOCxN,     // 9
+        eIOCxP,     // 10      
     };
 
 //    enum class Ports
@@ -29,19 +29,19 @@ public:
 //    enum Ports
     enum Ports
     {
-        Port0,        // 0
-        Port1,        // 1    
+        ePORT0,        // 0
+        ePORT1,        // 1    
     };
 
 
     enum ReadFunctions
     {
-        rfADC,       // 0     
+        eADC,       // 0     
     };
 
     enum WriteFunctions
     {
-        wfDAC,       // 0      
+        eDAC,       // 0      
     };
 
 

@@ -96,12 +96,12 @@ void loop()
         // PORT0 - Write TRIS
 //        IOExp.writeRegister(2, 0); // 0 = All outputs
 //        IOExp.writeRegister(Regs::TRIS, Ports::Port0, 0x00); // 0 = All outputs
-        IOExp.writeRegister(IOExp.TRIS, IOExp.Port0, 0x00); // 0 = All outputs
+        IOExp.writeRegister(IOExp.eTRIS, IOExp.ePORT0, 0x00); // 0 = All outputs
 
         // PORT0 - Write LAT
 //        IOExp.writeRegister(0, Toggle);  // Set all outputs
 //        IOExp.writeRegister(Regs::LAT, Ports::Port0, Toggle); // Set all outputs
-        IOExp.writeRegister(IOExp.LAT, IOExp.Port0, Toggle); // Set all outputs
+        IOExp.writeRegister(IOExp.eLAT, IOExp.ePORT0, Toggle); // Set all outputs
 
         // Toggle data outputed     
         Toggle = ~Toggle; 
@@ -110,26 +110,25 @@ void loop()
 
         // PORT1 - TRIS all input
 //        IOExp.writeRegister(0x1002, 0xFF);// 0xFF = Set all as inputs
-        IOExp.writeRegister(IOExp.TRIS, IOExp.Port1, 0xff);// 0xFF = Set all as inputs
+        IOExp.writeRegister(IOExp.eTRIS, IOExp.ePORT1, 0xff);// 0xFF = Set all as inputs
 
         // PORT1 - WPU all input 
 //        IOExp.writeRegister( 0x1006, 0x7F);// 0x7F = Activate all pullups but on the P1.7 pin
-        IOExp.writeRegister(IOExp.WPU, IOExp.Port1, 0x7f);// 0x7F = Activate all pullups but on the P1.7 pin
+        IOExp.writeRegister(IOExp.eWPU, IOExp.ePORT1, 0x7f);// 0x7F = Activate all pullups but on the P1.7 pin
 
         // PORT1 - ANSEL P1.7
 //        IOExp.writeRegister(0x1007, 0x80);// Set P1.7 pin as analog
-        IOExp.writeRegister(IOExp.ANSEL, IOExp.Port1, 0x80);// Set P1.7 pin as analog
+        IOExp.writeRegister(IOExp.eANSEL, IOExp.ePORT1, 0x80);// Set P1.7 pin as analog
 
         // PORT1 - read input
 //        read = IOExp.readRegister(0x1001);
 //        read = IOExp.readRegister(Regs::PORT, Ports::Port1);
-        read = IOExp.readRegister(IOExp.PORT, IOExp.Port1);
+        read = IOExp.readRegister(IOExp.ePORT, IOExp.ePORT1);
         xprintf("Read Port 1: %u  (Inv:%u) Read OK:%u\n", read, 255-read, IOExp.isLastReadSuccessful());
 
         // DAC 
-        dac_val += 32;
         xprintf("DAC: %u\n", dac_val);
-        IOExp.writeFunction(IOExp.wfDAC, 0, dac_val);
+        IOExp.writeFunction(IOExp.eDAC, 0, dac_val++);
 
 
         // PORT1 - read adc P1.7

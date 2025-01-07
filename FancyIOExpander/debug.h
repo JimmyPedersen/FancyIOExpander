@@ -19,7 +19,7 @@ extern "C" {
     
     
     //Enable/Disable debugging methods
-    #define DBG_USE_ANALOG_OUT  1
+    #define DBG_USE_ANALOG_OUT  0
     #define DBG_USE_PRINTF      1
 
 
