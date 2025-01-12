@@ -58,7 +58,7 @@ bool handle_write_cmd(address_t c, uint8_t rb)
                 break;
             
             case ePWM_SetDuty:
-                return pwm_set_duty_cycle(c.extra, rb << 2);
+                return pwm_set_duty_cycle(c.extra, (uint16_t)rb << 2);
                 break;
             
             default:

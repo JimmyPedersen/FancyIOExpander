@@ -73,6 +73,7 @@ void loop()
         uint8_t wb[3] = {val,(uint8_t)(val+1),(uint8_t)(val+2)};
 
         static unsigned char Toggle = 0x55;
+        static unsigned char duty_cycle = 0;
         uint16_t EEaddress = 0x0005;
 
 
@@ -101,7 +102,7 @@ void loop()
         // PORT0 - Write LAT
 //        IOExp.writeRegister(0, Toggle);  // Set all outputs
 //        IOExp.writeRegister(Regs::LAT, Ports::Port0, Toggle); // Set all outputs
-        IOExp.writeRegister(IOExp.eLAT, IOExp.ePORT0, Toggle); // Set all outputs
+        IOExp.writeRegister(IOExp.eLAT, IOExp.ePORT0, Toggle & 0xFC); // Set all outputs
 
         // Toggle data outputed     
         Toggle = ~Toggle; 
@@ -142,6 +143,15 @@ void loop()
         for(uint8_t i = 0; i < NO_OF_ADCS_TO_READ; i++)
            xprintf("#%u:%u ", i, adc_tmp[i]);
         Serial.println("");
+
+
+        duty_cycle += 16;
+        xprintf("Set PWM duty cycle: %u / %u\n", duty_cycle, ~duty_cycle);
+        IOExp.PWM_SetDutyCycle(IOExp.ePWM3, duty_cycle);    
+        IOExp.PWM_SetPinModule(IOExp.ePORT0, IOExp.ePIN0, IOExp.ePWM3);
+
+        IOExp.PWM_SetDutyCycle(IOExp.ePWM4, ~duty_cycle);    
+        IOExp.PWM_SetPinModule(IOExp.ePORT0, IOExp.ePIN1, IOExp.ePWM4);
       }
       nDevices++;
       Serial.println("");

@@ -6,10 +6,33 @@
 
 class FancyIOExp {
 public:
+  union address_t {
+      // First anonymous struct with bitfields
+      struct {
+          unsigned int cmd : 8;
+          unsigned int extra : 4;
+          unsigned int portNo : 3;
+          unsigned int isCMD : 1;
+      };
+      
+      // Second anonymous struct for byte-wise access
+      struct {
+          unsigned char AddrL;
+          unsigned char AddrH;
+      };
+      
+      unsigned int raw;
+
+      // Add implicit conversion operator
+      operator unsigned int() const {
+          return raw;
+      }
+  };
+
  //   enum class Registers
 //    enum class Registers: uint16_t
-//    enum Registers
-    enum Registers
+//    enum class Registers: uint16_t
+    enum Registers  
     {
         eLAT,       // 0
         ePORT,      // 1
@@ -26,13 +49,37 @@ public:
 
 //    enum class Ports
 //    enum class Ports: uint8_t
-//    enum Ports
+//    enum class Ports: uint8_t
     enum Ports
     {
         ePORT0,        // 0
         ePORT1,        // 1    
     };
 
+//    enum class Pins
+//    enum class Pins: uint8_t
+//    enum Pins
+    enum Pins
+    {
+        ePIN0,        // 0
+        ePIN1,        // 1    
+        ePIN2,        // 2
+        ePIN3,        // 3    
+        ePIN4,        // 4
+        ePIN5,        // 5    
+        ePIN6,        // 6
+        ePIN7,        // 7    
+    };
+
+//  enum class PWM_Modules: uint8_t
+    enum PWM_Modules
+    {
+        eNOPWM,       // 0
+        ePWM1,        // 1    
+        ePWM2,        // 2
+        ePWM3,        // 3     
+        ePWM4,        // 4     
+    };
 
     enum ReadFunctions
     {
@@ -41,8 +88,10 @@ public:
 
     enum WriteFunctions
     {
-        eDAC,       // 0      
-    };
+        eDAC = 32,
+        ePWM_ConfigurePin = 33,
+        ePWM_SetDutyCycle = 34
+   };
 
 
     /**
@@ -161,11 +210,42 @@ public:
     void writeFunction(WriteFunctions function, uint8_t extra, uint8_t data)
     {
       extra &= 0x0F;
-      uint16_t addr = (static_cast<uint16_t>(function) + 32) | 0x8000;
+      uint16_t addr = static_cast<uint16_t>(function) | 0x8000;
       addr |= (uint16_t)extra<<8;
       xprintf("Write-Function:%u, extra:%u, Addr:0x%04X\n", static_cast<uint16_t>(function), extra, addr);
       writeRegister(addr, data); 
     }
+
+
+    /**
+     * Configure PWM module duty cycle
+     * @param module PWM (or CCP) module to use 1-4     
+     * @param duty_cycle 0-255 <=> 0-100%
+     */
+    void PWM_SetDutyCycle(PWM_Modules module, uint8_t duty_cycle)
+    {
+      writeFunction(ePWM_SetDutyCycle, static_cast<uint8_t>(module), duty_cycle);
+    }
+
+
+    /**
+     * Configure PWM module duty cycle
+     * @param port PWM (or CCP) module to use 1-4     
+     * @param pin 0-255 <=> 0-100%
+     * @param module 
+     */
+    void PWM_SetPinModule(Ports port, Pins pin, PWM_Modules module)
+    {
+      static uint8_t m;
+      address_t addr;
+      addr.isCMD = true;
+      addr.extra = static_cast<uint8_t>(pin) & 0x0F;
+      addr.portNo = static_cast<uint8_t>(port) & 0x07;
+      addr.cmd = static_cast<uint8_t>(ePWM_ConfigurePin);
+      m = static_cast<uint8_t>(module);
+      writeMemory(addr, 1, &m);
+    }
+
 
     /**
      * Read data from expansion board memory
