@@ -83,7 +83,8 @@ public:
 
     enum ReadFunctions
     {
-        eADC,       // 0     
+        eCHIPINFO = 32,
+        eADC = 33,  
     };
 
     enum WriteFunctions
@@ -362,7 +363,7 @@ public:
     uint8_t readFunction(ReadFunctions function, uint8_t extra)
     {
       extra &= 0x0F;
-      uint16_t addr = (static_cast<uint16_t>(function) + 32) | 0x8000;
+      uint16_t addr = static_cast<uint16_t>(function) | 0x8000;
       addr |= (uint16_t)extra<<8;
  //     xprintf("Read-Function:%u, extra:%u, Addr:0x%04X\n", static_cast<uint16_t>(function), extra, addr);
       return readRegister(addr); 
@@ -376,7 +377,7 @@ public:
      */
     uint16_t readADC(uint8_t adcAddr) {
         static uint8_t adc_tmp[2] = {0, 0};
-        readMemory(0x8020 | ((uint16_t)adcAddr<<8), 2, adc_tmp);
+        readMemory((0x8000 + static_cast<uint16_t>(eADC)) | ((uint16_t)adcAddr<<8), 2, adc_tmp);
         xprintf("LB:0x%02X\n", adc_tmp[0]);
         xprintf("HB:0x%02X\n", adc_tmp[1]);
         return static_cast<uint16_t>(adc_tmp[1]) << 8 | adc_tmp[0];
@@ -390,7 +391,7 @@ public:
      * @return True if all ADCs were read successfully
      */
     bool readADCs(uint8_t start, uint8_t adcs, uint16_t *dest) {
-        return readMemory(0x8020 | ((uint16_t)start<<8) , adcs * 2, reinterpret_cast<uint8_t*>(dest)) == 1;
+        return readMemory((0x8000 + static_cast<uint16_t>(eADC)) | ((uint16_t)start<<8) , adcs * 2, reinterpret_cast<uint8_t*>(dest)) == 1;
     }
 
     /**

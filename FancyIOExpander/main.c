@@ -12,6 +12,9 @@
 #include "analog.h"
 #include "pwm.h"
 
+#define VERSION     1
+#define PORTSNPINS  ((eEXP_PORT_CNT<<4) + eEXP_PIN_CNT)
+
     
 typedef union
 {
@@ -33,11 +36,15 @@ typedef union
 typedef enum
 {
     eDAC = 32,
-    ePWM_ConfigPin = 33,
-    ePWM_SetDuty = 34
-}eFunctions_t;
+    ePWM_ConfigPin,
+    ePWM_SetDuty
+}eWriteFunctions_t;
 
-
+typedef enum
+{
+    eChipInfo = 32,
+    eADC
+}eReadFunctions_t;
 
 bool handle_write_cmd(address_t c, uint8_t rb)
 {
@@ -47,7 +54,7 @@ bool handle_write_cmd(address_t c, uint8_t rb)
     else
     {
         // Handle other commands
-        switch((eFunctions_t)c.cmd)
+        switch((eWriteFunctions_t)c.cmd)
         {
             case eDAC:
                 DAC1_SetOutput(rb & 31);
@@ -80,10 +87,27 @@ bool handle_read_cmd(address_t c, uint8_t *wb)
     else
     {
         // Handle other commands
-        switch(c.cmd)
+        switch((eReadFunctions_t)c.cmd)
         {
+            case eChipInfo:
+                switch(c.extra + i2c_slave_get_byte_no())
+                {
+                    case 0:
+                        *wb = VERSION;
+                        break;
+                        
+                    case 1:
+                        *wb = PORTSNPINS;
+                        break;
+                        
+                    default:
+                        *wb = c.extra + i2c_slave_get_byte_no();
+                        break;                        
+                }
+                break;
+
              // Read ADC value
-            case REGISTERS_MAX_COUNT + 0:   // 32
+            case eADC:
                 if(!i2c_slave_get_byte_no())
                     a.raw = c.raw;
                 
@@ -103,10 +127,7 @@ bool handle_read_cmd(address_t c, uint8_t *wb)
                     }
                 }
                 break;
-                
-            case REGISTERS_MAX_COUNT + 1:  // 33
-                break;
-            
+
             default:
                 return false;
         }

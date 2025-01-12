@@ -66,6 +66,9 @@ void loop()
       if(chipAddr==0x2A)
       {
  //       delay(1000);
+        uint8_t ver = IOExp.readFunction(IOExp.eCHIPINFO, 0);
+        uint8_t PortsNPin = IOExp.readFunction(IOExp.eCHIPINFO, 1);
+        xprintf("Version: %u Ports:%u Pins/Port:%u\n", ver, PortsNPin>>4, PortsNPin & 0x0F);
 
         val += 1;
 

@@ -32,7 +32,6 @@
 #define I2C_SLAVE_ADDRESS               42
 #define I2C_SLAVE_MASK                  127
 
-
 typedef enum
 {
     ePORTA = 0,
