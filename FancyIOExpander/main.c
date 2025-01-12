@@ -10,6 +10,7 @@
 #include "eeprom.h"
 #include "debug.h"
 #include "analog.h"
+#include "pwm.h"
 
     
 typedef union
@@ -29,6 +30,13 @@ typedef union
     unsigned int raw;
 }address_t;
 
+typedef enum
+{
+    eDAC = 32,
+    ePWM_ConfigPin = 33,
+    ePWM_SetDuty = 34
+}eFunctions_t;
+
 
 
 bool handle_write_cmd(address_t c, uint8_t rb)
@@ -39,13 +47,18 @@ bool handle_write_cmd(address_t c, uint8_t rb)
     else
     {
         // Handle other commands
-        switch(c.cmd)
+        switch((eFunctions_t)c.cmd)
         {
-            case REGISTERS_MAX_COUNT+0: // 32
+            case eDAC:
                 DAC1_SetOutput(rb & 31);
                 break;
                 
-            case REGISTERS_MAX_COUNT+1: // 33
+            case ePWM_ConfigPin:
+                return pwm_configure_pin(c.portNo, c.extra, rb);
+                break;
+            
+            case ePWM_SetDuty:
+                return pwm_set_duty_cycle(c.extra, rb << 2);
                 break;
             
             default:
@@ -92,7 +105,6 @@ bool handle_read_cmd(address_t c, uint8_t *wb)
                 break;
                 
             case REGISTERS_MAX_COUNT + 1:  // 33
-
                 break;
             
             default:
@@ -112,8 +124,7 @@ bool i2c_write_to_slave_cb(volatile uint16_t *addr, uint8_t rb)
     if(c.isCMD)
     {
         // Check if the requested command exists, if not return false
-        if(!handle_write_cmd(c, rb))
-            return false;
+        return handle_write_cmd(c, rb);
     }
     else if(*addr < SLAVE_EEPROM_SIZE)
     {

@@ -20,6 +20,10 @@
         <itemPath>mcc_generated_files/memory.h</itemPath>
         <itemPath>mcc_generated_files/i2c1_slave.h</itemPath>
         <itemPath>mcc_generated_files/fvr.h</itemPath>
+        <itemPath>mcc_generated_files/cwg.h</itemPath>
+        <itemPath>mcc_generated_files/pwm1.h</itemPath>
+        <itemPath>mcc_generated_files/pwm2.h</itemPath>
+        <itemPath>mcc_generated_files/tmr4.h</itemPath>
       </logicalFolder>
       <itemPath>config.h</itemPath>
       <itemPath>registers.h</itemPath>
@@ -27,6 +31,7 @@
       <itemPath>debug.h</itemPath>
       <itemPath>i2c_slave.h</itemPath>
       <itemPath>analog.h</itemPath>
+      <itemPath>pwm.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -57,6 +62,10 @@
         <itemPath>mcc_generated_files/memory.c</itemPath>
         <itemPath>mcc_generated_files/i2c1_slave.c</itemPath>
         <itemPath>mcc_generated_files/fvr.c</itemPath>
+        <itemPath>mcc_generated_files/pwm1.c</itemPath>
+        <itemPath>mcc_generated_files/cwg.c</itemPath>
+        <itemPath>mcc_generated_files/pwm2.c</itemPath>
+        <itemPath>mcc_generated_files/tmr4.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>Unused.c</itemPath>
@@ -64,6 +73,7 @@
       <itemPath>eeprom.c</itemPath>
       <itemPath>i2c_slave.c</itemPath>
       <itemPath>analog.c</itemPath>
+      <itemPath>pwm.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

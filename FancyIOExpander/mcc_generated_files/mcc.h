@@ -54,13 +54,17 @@
 #include <conio.h>
 #include "interrupt_manager.h"
 #include "i2c1_slave.h"
+#include "fvr.h"
+#include "adcc.h"
+#include "dac1.h"
+#include "tmr4.h"
 #include "tmr2.h"
 #include "pwm4.h"
-#include "adcc.h"
-#include "fvr.h"
+#include "pwm1.h"
+#include "pwm2.h"
 #include "pwm3.h"
 #include "memory.h"
-#include "dac1.h"
+#include "cwg.h"
 #include "eusart1.h"
 
 

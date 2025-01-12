@@ -55,11 +55,15 @@ void SYSTEM_Initialize(void)
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
     FVR_Initialize();
+    PWM2_Initialize();
     ADCC_Initialize();
+    TMR4_Initialize();
     PWM4_Initialize();
-    PWM3_Initialize();
-    DAC1_Initialize();
     TMR2_Initialize();
+    PWM1_Initialize();
+    DAC1_Initialize();
+    PWM3_Initialize();
+    CWG_Initialize();
     EUSART1_Initialize();
 }
 

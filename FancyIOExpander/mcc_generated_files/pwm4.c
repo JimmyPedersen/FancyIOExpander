@@ -68,7 +68,7 @@
     PWM4DCL = 0xC0;   
 
     // Select timer
-    CCPTMRSbits.P4TSEL = 1;
+    CCPTMRSbits.P4TSEL = 2;
  }
 
  void PWM4_LoadDutyValue(uint16_t dutyValue)

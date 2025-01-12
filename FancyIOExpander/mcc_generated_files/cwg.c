@@ -1,21 +1,21 @@
- /**
-   PWM3 Generated Driver File
+/**
+   CWG Generated Driver File
  
    @Company
      Microchip Technology Inc.
  
    @File Name
-     pwm3.c
+     cwg.c
  
    @Summary
-     This is the generated driver implementation file for the PWM3 driver using PIC10 / PIC12 / PIC16 / PIC18 MCUs
+     This is the generated driver implementation file for the CWG driver using PIC10 / PIC12 / PIC16 / PIC18 MCUs
  
    @Description
-     This source file provides implementations for driver APIs for PWM3.
+     This source file provides implementations for driver APIs for CWG.
      Generation Information :
          Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
          Device            :  PIC18F24Q10
-         Driver Version    :  2.01
+         Driver Version    :  2.11
      The generated drivers are tested against the following:
          Compiler          :  XC8 2.36 and above or later
          MPLAB             :  MPLAB X 6.00
@@ -48,37 +48,58 @@
    Section: Included Files
  */
 
- #include <xc.h>
- #include "pwm3.h"
+#include <xc.h>
+#include "cwg.h"
 
- /**
-   Section: PWM Module APIs
- */
+/**
+  Section: CWG APIs
+*/
 
- void PWM3_Initialize(void)
- {
-    // Set the PWM to the options selected in the PIC10 / PIC12 / PIC16 / PIC18 MCUs.
-    // PWM3POL active_hi; PWM3EN enabled; 
-    PWM3CON = 0x80;   
+void CWG_Initialize(void)
+{
+    // Set the CWG to the options selected in PIC10 / PIC12 / PIC16 / PIC18 MCUs
 
-    // DC 127; 
-    PWM3DCH = 0x7F;   
+	// CWG1POLA non inverted; CWG1POLC non inverted; CWG1POLB non inverted; CWG1POLD non inverted; 
+	CWG1CON1 = 0x00;
 
-    // DC 3; 
-    PWM3DCL = 0xC0;   
+	// CWG1DBR 0; 
+	CWG1DBR = 0x00;
 
-    // Select timer
-    CCPTMRSbits.P3TSEL = 2;
- }
+	// CWG1DBF 0; 
+	CWG1DBF = 0x00;
 
- void PWM3_LoadDutyValue(uint16_t dutyValue)
- {
-     // Writing to 8 MSBs of PWM duty cycle in PWMDCH register
-     PWM3DCH = (dutyValue & 0x03FC)>>2;
-     
-     // Writing to 2 LSBs of PWM duty cycle in PWMDCL register
-     PWM3DCL = (uint8_t)((dutyValue & 0x0003)<<6);
- }
- /**
-  End of File
- */
+	// CWG1SHUTDOWN No Auto-shutdown; CWG1REN disabled; CWG1LSBD tri-stated; CWG1LSAC tri-stated; 
+	CWG1AS0 = 0x14;
+
+	// AS1E disabled; AS0E disabled; AS3E disabled; AS2E disabled; AS5E disabled; AS4E disabled; 
+	CWG1AS1 = 0x00;
+
+	// CWG1STRD disabled; CWG1STRB disabled; CWG1STRC disabled; CWG1STRA disabled; CWG1OVRD low; CWG1OVRA low; CWG1OVRB low; CWG1OVRC low; 
+	CWG1STR = 0x00;
+
+	// CWG1CS FOSC; 
+	CWG1CLKCON = 0x00;
+
+	// IS CWG1IN; 
+	CWG1ISM = 0x00;
+
+	// CWG1LD Buffer_not_loaded; CWG1EN enabled; CWG1MODE Steering mode; 
+	CWG1CON0 = 0x80;
+
+}
+
+
+void CWG_AutoShutdownEventSet()
+{
+    CWG1AS0bits.CWG1SHUTDOWN = 1;
+}
+
+void CWG_AutoShutdownEventClear()
+{
+    CWG1AS0bits.CWG1SHUTDOWN = 0;
+}
+
+
+/**
+ End of File
+*/

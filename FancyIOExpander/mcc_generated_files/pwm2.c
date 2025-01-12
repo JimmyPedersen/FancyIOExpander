@@ -1,26 +1,24 @@
 /**
-  Generated Pin Manager File
+  PWM2 Generated Driver File
 
-  Company:
+  @Company
     Microchip Technology Inc.
 
-  File Name:
-    pin_manager.c
+  @File Name
+    pwm2.c
 
-  Summary:
-    This is the Pin Manager file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs
+  @Summary
+    This is the generated driver implementation file for the PWM2 driver using PIC10 / PIC12 / PIC16 / PIC18 MCUs
 
-  Description:
-    This header file provides implementations for pin APIs for all pins selected in the GUI.
+  @Description
+    This source file provides implementations for driver APIs for PWM2.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
         Device            :  PIC18F24Q10
-        Driver Version    :  2.11
+        Driver Version    :  2.01
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.36 and above
-        MPLAB             :  MPLAB X 6.00
-
-    Copyright (c) 2013 - 2015 released Microchip Technology Inc.  All rights reserved.
+         MPLAB 	          :  MPLAB X 6.00
 */
 
 /*
@@ -46,85 +44,65 @@
     SOFTWARE.
 */
 
-#include "pin_manager.h"
+/**
+  Section: Included Files
+*/
 
+#include <xc.h>
+#include "pwm2.h"
 
+/**
+  Section: Macro Declarations
+*/
 
+#define PWM2_INITIALIZE_DUTY_VALUE    511
 
+/**
+  Section: PWM Module APIs
+*/
 
-void PIN_MANAGER_Initialize(void)
+void PWM2_Initialize(void)
 {
-    /**
-    LATx registers
-    */
-    LATA = 0x00;
-    LATB = 0x00;
-    LATC = 0x00;
-
-    /**
-    TRISx registers
-    */
-    TRISA = 0xFF;
-    TRISB = 0xDF;
-    TRISC = 0xFF;
-
-    /**
-    ANSELx registers
-    */
-    ANSELC = 0x00;
-    ANSELB = 0x80;
-    ANSELA = 0x04;
-
-    /**
-    WPUx registers
-    */
-    WPUE = 0x00;
-    WPUB = 0x00;
-    WPUA = 0x00;
-    WPUC = 0x00;
-
-    /**
-    ODx registers
-    */
-    ODCONA = 0x00;
-    ODCONB = 0x00;
-    ODCONC = 0x00;
-
-    /**
-    SLRCONx registers
-    */
-    SLRCONA = 0xFF;
-    SLRCONB = 0xFF;
-    SLRCONC = 0xFF;
-
-    /**
-    INLVLx registers
-    */
-    INLVLA = 0xFF;
-    INLVLB = 0xFF;
-    INLVLC = 0xFF;
-    INLVLE = 0x08;
-
-
-
-
-
-   
-    
+    // Set the PWM2 to the options selected in the User Interface
 	
-    RX1PPS = 0x0E;   //RB6->EUSART1:RX1;    
-    SSPDATPPS = 0x14;   //RC4->MSSP1:SDA1;    
-    RC3PPS = 0x0D;   //RC3->MSSP1:SCL1;    
-    CWGINPPS = 0x08;   //RB0->CWG:CWG1;    
-    RB5PPS = 0x09;   //RB5->EUSART1:TX1;    
-    RC4PPS = 0x0E;   //RC4->MSSP1:SDA1;    
-    SSPCLKPPS = 0x13;   //RC3->MSSP1:SCL1;    
-}
-  
-void PIN_MANAGER_IOC(void)
-{   
+	// MODE PWM; EN enabled; FMT right_aligned; 
+	CCP2CON = 0x8C;    
+	
+	// RH 1; 
+	CCPR2H = 0x01;    
+	
+	// RL 255; 
+	CCPR2L = 0xFF;    
+
+	// Selecting Timer 4
+	CCPTMRSbits.C2TSEL = 0x2;
+    
 }
 
+void PWM2_LoadDutyValue(uint16_t dutyValue)
+{
+    dutyValue &= 0x03FF;
+    
+    // Load duty cycle value
+    if(CCP2CONbits.FMT)
+    {
+        dutyValue <<= 6;
+        CCPR2H = dutyValue >> 8;
+        CCPR2L = dutyValue;
+    }
+    else
+    {
+        CCPR2H = dutyValue >> 8;
+        CCPR2L = dutyValue;
+    }
+}
+
+bool PWM2_OutputStatusGet(void)
+{
+    // Returns the output status
+    return(CCP2CONbits.OUT);
+}
 /**
  End of File
 */
+

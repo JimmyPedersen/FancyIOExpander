@@ -33,9 +33,10 @@
             <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/registers.h</file>
             <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/i2c_slave.c</file>
             <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/main.c</file>
-            <file>file:/C:/Program%20Files/Microchip/xc8/v2.50/pic/sources/c99/common/awdiv.c</file>
             <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/analog.c</file>
             <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/mcc_generated_files/eusart1.c</file>
+            <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/mcc_generated_files/dac1.c</file>
+            <file>file:/C:/Work/FancyIOExpander/FancyIOExpander/debug.h</file>
         </group>
     </open-files>
 </project-private>
