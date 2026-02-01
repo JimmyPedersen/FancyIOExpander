@@ -195,6 +195,49 @@ bool i2c_read_from_slave_cb(volatile uint16_t *addr, uint8_t *wb)
 }
 
 
+// Determine I2C address from RA0 state
+// NC (Floating) -> 42
+// Low -> 41
+// High -> 43
+uint8_t get_i2c_slave_address(void)
+{
+    uint8_t slaveAddr = I2C_SLAVE_ADDRESS; // Default 42 (NC)
+
+    I2C_ADDRESS_SetDigitalMode();
+    I2C_ADDRESS_SetDigitalInput();
+
+    // Check for Low (using internal Pull-up)
+    I2C_ADDRESS_SetPullup();
+    __delay_ms(2); 
+    if (I2C_ADDRESS_GetValue() == 0)
+    {
+        slaveAddr = 41;
+    }
+    else
+    {
+        // Pin reads High with Pull-up. Could be High or Floating.
+        I2C_ADDRESS_ResetPullup();
+
+        // Separate High from Floating by discharging the pin
+        // Drive Low briefly
+        I2C_ADDRESS_SetLow();
+        I2C_ADDRESS_SetDigitalOutput();
+        __delay_us(10);
+        I2C_ADDRESS_SetDigitalInput();
+        __delay_us(5);
+
+        if (I2C_ADDRESS_GetValue() == 1)
+        {
+            slaveAddr = 43;
+        }
+        else
+        {
+             slaveAddr = I2C_SLAVE_ADDRESS;
+        }
+    }
+}
+
+
 void main(void)
 {
     // initialize the device
@@ -211,9 +254,10 @@ void main(void)
     analog_init();
     dbg_analog(32);
     
-    dbg_printf("Fancy I2C Extender\r\n");
-    
-    i2c_slave_init(I2C_SLAVE_ADDRESS, I2C_SLAVE_MASK, &i2c_write_to_slave_cb, &i2c_read_from_slave_cb);
+    uint8_t slaveAddr = get_i2c_slave_address();    
+    dbg_printf("Fancy I2C Extender\r\nI2C Slave Address: 0x%02X\r\n", slaveAddr);
+
+    i2c_slave_init(slaveAddr, I2C_SLAVE_MASK, &i2c_write_to_slave_cb, &i2c_read_from_slave_cb);
     dbg_analog(0);  
     
     while (1)

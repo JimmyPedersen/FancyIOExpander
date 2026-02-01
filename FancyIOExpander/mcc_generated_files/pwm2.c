@@ -87,13 +87,13 @@ void PWM2_LoadDutyValue(uint16_t dutyValue)
     if(CCP2CONbits.FMT)
     {
         dutyValue <<= 6;
-        CCPR2H = dutyValue >> 8;
-        CCPR2L = dutyValue;
+        CCPR2H = (uint8_t)(dutyValue >> 8);
+        CCPR2L = (uint8_t)dutyValue;
     }
     else
     {
-        CCPR2H = dutyValue >> 8;
-        CCPR2L = dutyValue;
+        CCPR2H = (uint8_t)(dutyValue >> 8);
+        CCPR2L = (uint8_t)dutyValue;
     }
 }
 

@@ -163,3 +163,27 @@ Example: Write `0x55` to `LAT0` (Port 0 Latch) -> Write I2C Addr `0x8000`, Data 
 2. Set Duty Cycle (ID 34):
    - Address: `0x8322` (Extra/Module=3 -> `0x80 | 0x03` = `0x83`, Cmd 34).
    - Data: `128` (50% Duty).
+
+### Read Button Input (P1.0) with Pull-Up
+1. **Configure P1.0 as Input**: Write `TRIS` (ID 2).
+   - Address: `0x9002` (Port 1).
+   - Data: `0x01` (Set Bit 0).
+2. **Enable Pull-Up**: Write `WPU` (ID 6).
+   - Address: `0x9006`.
+   - Data: `0x01` (Set Bit 0).
+3. **Read Status**: Read `PORT` (ID 1).
+   - Write Address: `0x9001`.
+   - Restart/Read 1 Byte: result `& 0x01` is Pin 0 state.
+
+### Configure Interrupt-on-Change (Falling Edge on P0.3)
+1. **Set Input**: Write `TRIS` (ID 2).
+   - Address: `0x8002` (Port 0).
+   - Data: `0x08` (Set Bit 3).
+2. **Enable Negative Edge**: Write `IOCxN` (ID 9).
+   - Address: `0x8009` (Port 0).
+   - Data: `0x08` (Set Bit 3).
+3. **Wait & Handle**:
+   - When INT triggers, Read Flag `IOCxF` (ID 8).
+   - Write Address: `0x8008`.
+   - Read 1 Byte: Check if Bit 3 is set.
+   - **Clear Flag**: Write `0x00` (or `~0x08`) to Address `0x8008` to reset state.

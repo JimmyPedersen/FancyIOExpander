@@ -6,4 +6,5 @@ FancyIOExpander/_build/
 FancyIOExpander/cmake/
 FancyIOExpander/dist/
 FancyIOExpander/dist/default/
-FancyIOExpander/dist/default/production/*
+FancyIOExpander/dist/default/production/
+FancyIOExpander/out/
