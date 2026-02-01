@@ -111,18 +111,21 @@ Example: Write `0x55` to `LAT0` (Port 0 Latch) -> Write I2C Addr `0x8000`, Data 
 - **Data**: Value (0-31). Sets the 5-bit DAC1 output.
 
 **ADC Read (ID 33)** - *Read Only*
-- **Address**: Determines channel.
-  - High Byte: `0x80 | (Port << 4) | Pin`
-  - Low Byte: `0x21` (33)
+- **Address**: `0x[8+Port][Pin] 21` (Hex)
+  - **High Byte**: Constructs from Port and Pin.
+    - Port 0: `0x8` + Pin Hex Digit. (e.g., P0.5 -> `0x85`)
+    - Port 1: `0x9` + Pin Hex Digit. (e.g., P1.0 -> `0x90`)
+  - **Low Byte**: `0x21` (Command 33).
 - **Read**: Returns 16-bit ADC value (Little Endian).
   - 1st Byte: Low byte of result.
   - 2nd Byte: High byte of result.
 - **Note**: Reading multiple bytes creates an auto-incrementing block read of ADC values across pins.
 
 **PWM Configuration (ID 33)** - *Write Only*
-- **Address**:
-  - High Byte: `0x80 | (Port << 4) | Pin`
-  - Low Byte: `0x21` (33)
+- **Address**: `0x[8+Port][Pin] 21` (Hex)
+  - Same addressing schema as ADC Read.
+  - **High Byte**: `0x8X` for Port 0, `0x9X` for Port 1.
+  - **Low Byte**: `0x21`.
 - **Data**: Module Index.
   - `0`: Disable PWM on this pin.
   - `1`: CCP1 (Port C/B supported usually, see limitations).
@@ -134,9 +137,10 @@ Example: Write `0x55` to `LAT0` (Port 0 Latch) -> Write I2C Addr `0x8000`, Data 
   - Modules 3-4 (PWM) cannot be mapped to Port B (Virtual P1.0-P1.4).
 
 **PWM Duty Cycle (ID 34)** - *Write Only*
-- **Address**:
-  - High Byte: `0x80 | (ModuleIndex)`. (The `Extra` field in address is used for module selection).
-  - Low Byte: `0x22` (34).
+- **Address**: `0x8[Module] 22` (Hex)
+  - **High Byte**: `0x80` + Module Index.
+  - **Low Byte**: `0x22` (Command 34).
+  - *Example*: Set Duty for Module 3 -> Address `0x8322`.
 - **Data**: 8-bit Duty Cycle.
   - The value is shifted left by 2 internally (effectively set to top 8 bits of 10-bit duty).
 
