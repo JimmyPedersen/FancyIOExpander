@@ -235,6 +235,7 @@ uint8_t get_i2c_slave_address(void)
              slaveAddr = I2C_SLAVE_ADDRESS;
         }
     }
+    return slaveAddr;
 }
 
 
